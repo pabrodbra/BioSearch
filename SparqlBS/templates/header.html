@@ -1,0 +1,41 @@
+﻿{%load staticfiles%}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Biosearch</title>
+        <meta http-equiv="Content-Type" content="text/html; utf-8" />
+        <link rel="shortcut icon" href="images/favicon.gif" />
+        <link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}" />
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <!--Header Begin-->
+        <div id="header">
+            <div class="center">
+                <div id="logo"><a href="#">Biosearch</a></div>
+                <!--Menu Begin-->
+                <div id="menu">
+                    <ul>
+                        <li><a href="index.html"><span>Home</span></a></li>
+                        <li><a  href="about.html"><span>About</span></a></li>
+                        <li><a href="services.html"><span>Services</span></a></li>
+                        <li><a href="www.google.com"><span>Contact</span></a></li>
+                    </ul>
+                </div>
+                <!--Menu END-->
+            </div>
+        </div>
+{%block content%}
+
+{% endblock %}
+
+        <div id="footer">
+            <div class="foot"> <span>Biosearch</span> by "https://www.uma.es/">Universidad de Malaga</a> is licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License.</a> </div>
+        </div>
+
+        <script type="text/javascript" src="{% static "js/mainFunctions.js" %}"></script>
+    </body>
+</html>
