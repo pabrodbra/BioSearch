@@ -6,7 +6,7 @@ BioSearch is a web services which provides information relating pathways, reacti
 
 To run BioSearch on your local computer we recommend you to have installed Python 3.5.2 since it was the version this project was developed.
 
-* `git remote add origin https://github.com/pabrodbra/BioSearch.git`
+* `git clone https://github.com/pabrodbra/BioSearch.git`
 
 ### Prerequisites
 
@@ -40,7 +40,7 @@ To setup Django now execute the following commands:
 
 Lastly, we should be able to run BioSearch locally with:
 
-*· To modify the ip and port use `python manage.py runserver 0.0.0.0:8000`
+* To modify the ip and port use `python manage.py runserver 0.0.0.0:8000`
 
 Example URL:
 

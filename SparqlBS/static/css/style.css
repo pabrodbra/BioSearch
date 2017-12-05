@@ -1,5 +1,3 @@
-
-
 body {margin: 0px;padding: 0px;border: 0px;font-family:Arial, Helvetica, sans-serif;background:#E6E6E6;color:#666;}
 
 /*Fonts*/
@@ -105,3 +103,11 @@ a.button{background:url(images/buttonr.gif) no-repeat right; padding:3px 0px; ma
 }
 .feed{width:auto; float:left;}
 .feed img{ border: solid 0px; margin-top:120px; padding:0px 7px;}
+
+/*
+    DESIGNED
+*/
+
+.default-searchbox{
+    padding: 15px 10px 15px 10px;
+}
