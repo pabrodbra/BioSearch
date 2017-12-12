@@ -16,15 +16,13 @@
                 <div class="panel-body text-center">
                     <!-- PANEL TITLE -->
                     <p class="lead" style="font-size:30px"><strong>Search Pathways</strong></p>
-                </div>
-                <ul id="pathway_list" class="list-group list-group-flush text-center" style="background">
-
                     <!-- PATHWAY SEARCH BOX -->
-                    <li class="list-group-item btn-default-searchbox">
+                    <div class="btn-default-searchbox" style="margin-bottom: 10px">
                         <button id="pathway_submit" class="btn btn-primary">Search</button>
                         <input id="pathway_input" type="text" />
-                    </li>
-
+                    </div>
+                </div>
+                <ul id="pathway_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px" >
                     <!-- PATHWAY SEARCH RESULTS -->
                 </ul>
             </div>
@@ -40,7 +38,7 @@
                     <!-- PANEL TITLE -->
                     <p class="lead" style="font-size:30px"><strong>Reacciones</strong></p>
                 </div>
-                <ul id="reaction_list" class="list-group list-group-flush text-center">
+                <ul id="reaction_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px">
                     <li class="list-group-item">
                         <button class="btn btn-lg btn-block btn-default" href="#" style="background:white">Encima 1</a>
                     </li>
@@ -74,7 +72,7 @@
                     <!-- PANEL TITLE -->
                     <p class="lead" style="font-size:30px"><strong>Proteinas</strong></p>
                 </div>
-                <ul id="enzimes_list" class="list-group list-group-flush text-center">
+                <ul id="enzimes_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px">
                     <li class="list-group-item">
                         <span class="glyphicon glyphicon-calendar"></span> Organismo 1
                     </li>

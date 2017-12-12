@@ -4,6 +4,8 @@ BioSearch
 Universidad de Málaga
 */
 
+var object;
+
 // -- HELPERS
 var list_item_class = "list-group-item"
 var list_item_button_class = "btn btn-lg btn-block btn-default"
@@ -25,7 +27,7 @@ function parseJSONresult(json_response){
 
 function searchPathways(){
 	var input_pathway = document.getElementById("pathway_input").value;
-
+	var parsed_pathway = {}
 	console.log(input_pathway);
 
 	$.ajax({
@@ -34,14 +36,17 @@ function searchPathways(){
 		data: {'input':input_pathway},
 		success:function(response){
 			//PARSE
+			/*
 			console.log("--- RESPONSE ---");
 			console.log(response);
 			console.log("--- PARSED RESPONSE ---");
-			var test = JSON.parse(response);
-			console.log(test["head"]["vars"]);
+			*/
+			object = response;
+			parsed_pathway = parseResponse(response);
+			//var test = JSON.parse(response);
 		},
 		complete:function(){
-			appendPathways();
+			appendPathways(parsed_pathway);
 		},
 		error:function(e){
 			console.log("***ERROR*** :: " + e)
@@ -66,27 +71,65 @@ var element = document.getElementById("div1");
 element.appendChild(para);
 </script> 
 */
-
-function appendPathways(pathway_results){
+var test;
+function appendPathways(parsed_response){
+	// Get List to Append
 	var pathway_list = document.getElementById("pathway_list");
-	for (i=0; i<10; i++){
-	//for (var path in pathway_results){
-		var temp_li = document.createElement('li');
-		temp_li.className = list_item_class;
-		var temp_button = document.createElement('button');
-		temp_button.className = list_item_button_class;
-		var temp_text = document.createTextNode(i);
 
-		temp_button.appendChild(temp_text);
+	variables = parsed_response.vars;
+	results = parsed_response.results;
+	console.log("DEBUG 1");
+	console.log(variables);
+	console.log(results);
+	test = variables;
 
-		pathway_list.appendChild(temp_button);
+	for (var result in results){
+		console.log("------------------- NEW RESULT ------------------------")
+		var current_result = results[result]
+		// Create Elements
+		var new_li = document.createElement('li');
+		new_li.className = list_item_class;
+		var new_button = document.createElement('button');
+		new_button.className = list_item_button_class;
+		console.log("DEBUG 2");
+		console.log(current_result)
+
+		var new_string = "";
+
+		//new_button.setAttribute("id", uri)
+		console.log("DEBUG 3");
+		// Create text from variables of results
+		for (var var_name in variables){
+			current_value = current_result[variables[var_name]]['value']
+			if (var_name == 0){
+				new_button.setAttribute("id", current_result[variables[var_name]]['value'])
+			}
+			else if (var_name == variables.length-1){
+				new_string += current_value
+			} else {
+				new_string += current_value + " | " ;
+			}
+		}
+		console.log(new_string);
+		// Add text to element
+		var new_text = document.createTextNode(new_string);
+
+		new_button.appendChild(new_text);
+
+		pathway_list.appendChild(new_button);
 	}
+}
+
+function parseResponse(response){
+	var variables = response.head.vars
+	var object_arrays = response.results.bindings
+	console.log("TESTING PARSERESPONSE");
+	return {vars:variables, results:object_arrays}
 }
 
 
 // -- ONCLICK
 
 $("#pathway_submit").click(function() {
-	console.log("TEST")
 	searchPathways();
 });
