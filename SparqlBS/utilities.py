@@ -1,5 +1,6 @@
 from SPARQLWrapper import *
 
+
 def convert_json_format_into_list(results):
     """
     Given a dictionary containing the results of a SPARQL query in JSON format, it creates a list of lists in which
@@ -65,9 +66,10 @@ def extract_fragment_from_uri(uri):
 
 def select_pathway(sparql, pathway_search):
     """
+    It retrieves all the pathways which names contain a given keyword (search word)
 
-    :param sparql: SPARQLWrapper object.
-    :param pathway_search:
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param pathway_search: The keyword or search word.
     :return: The query results in JSON format.
     """
 
@@ -96,10 +98,11 @@ def select_pathway(sparql, pathway_search):
 
 def select_reaction(sparql, pathway_uri):
     """
+    It retrieves all biochemical reactions of a given pathway.
 
-    :param sparql: SPARQLWrapper object.
-    :param pathway_uri:
-    :return:
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param pathway_uri: The pathway identifier (URI)
+    :return: The query result in JSON format.
     """
 
     query_reactions = """
@@ -120,16 +123,17 @@ def select_reaction(sparql, pathway_uri):
 
 def select_controller(sparql, reaction_uri):
     """
+    It retrieves all non-protein type controllers of a given reaction.
 
-    :param sparql: SPARQLWrapper object.
-    :param reaction_uri:
-    :return:
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param reaction_uri: The reaction URI identifier.
+    :return: The query result in JSON format.
     """
 
     query_controllers = """
         PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
 
-        SELECT DISTINCT ?controller ?controller_name ?cell_term ?controller_type ?control_type
+        SELECT DISTINCT ?controller ?controller_name ?controller_type ?control_type
         WHERE
           {
             ?control biopax3:controlled <""" + reaction_uri + """> ;
@@ -138,9 +142,7 @@ def select_controller(sparql, reaction_uri):
             VALUES ?controller_type{biopax3:PhysicalEntity biopax3:Complex biopax3:Rna
                                     biopax3:SmallMolecule biopax3:Dna}
             ?controller a ?controller_type ;
-                     biopax3:displayName ?controller_name ;
-                     biopax3:cellularLocation ?cell_vocabulary .
-            ?cell_vocabulary biopax3:term ?cell_term
+                     biopax3:displayName ?controller_name
           }
 
           ORDER BY ?control_type
@@ -153,18 +155,20 @@ def select_controller(sparql, reaction_uri):
 
 def select_protein(sparql, reaction_uri):
     """
+    It retrieves all protein type controllers of a given reaction.
 
-    :param sparql: SPARQLWrapper object.
-    :param reaction_uri:
-    :return:
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param reaction_uri: The reaction URI identifier.
+    :return: The query result in JSON format.
     """
 
     query_proteins = """
         PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
 
-        SELECT DISTINCT ?protein ?protein_name ?control_type ?protein_id
+        SELECT DISTINCT ?protein_id ?protein_name ?controller_type ?control_type
         WHERE
           {
+            VALUES ?controller_type{"Protein"}
             ?protein a biopax3:Protein .
             ?control biopax3:controlled <""" + reaction_uri + """> ;
                      biopax3:controller ?protein ;
@@ -188,12 +192,85 @@ def select_protein(sparql, reaction_uri):
     return sparql.queryAndConvert()
 
 
-def select_uniprot(sparql, uniprot_id):
+def select_all_controller(sparql, reaction_uri):
+    """
+    It retrieves all types of controllers of a given reaction, both protein and non-protein types.
+
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param reaction_uri: The reaction URI identifier.
+    :return: The query result in JSON format.
     """
 
-    :param sparql: SPARQLWrapper object.
-    :param uniprot_id:
-    :return:
+    query_all_controllers = """
+        PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
+
+        SELECT DISTINCT ?controller_id ?controller_name ?controller_type ?control_type
+        WHERE
+          {
+            ?control biopax3:controlled <""" + reaction_uri + """> ;
+                     a ?control_type
+
+            {VALUES ?controller_type{biopax3:PhysicalEntity biopax3:Complex biopax3:Rna
+                                    biopax3:SmallMolecule biopax3:Dna}
+            ?control biopax3:controller ?controller_id .
+            ?controller_id biopax3:displayName ?controller_name ;
+                           a ?controller_type}
+
+            UNION {VALUES ?controller_type{biopax3:Protein}
+            ?control biopax3:controller ?protein .
+            ?protein biopax3:displayName ?controller_name ;
+                 a ?controller_type
+            OPTIONAL {
+              ?protein biopax3:entityReference ?protein_ref .
+              ?protein_ref biopax3:xref ?protein_xref .
+              ?protein_xref biopax3:id ?protein_ac ;
+                            biopax3:db ?protein_db .
+              FILTER regex(?protein_db, "uniprot", "i")
+            }
+            BIND (IF(BOUND(?protein_ac), ?protein_ac, ?protein) AS ?controller_id)}
+          }
+
+        ORDER BY ?control_type
+        """
+
+    sparql.setQuery(query_all_controllers)
+    sparql.setReturnFormat(JSON)
+    return sparql.queryAndConvert()
+
+
+def select_controller_info(sparql, controller_uri):
+    """
+    It retrieves some information about a controller given its URI.
+
+    :param sparql: SPARQLWrapper object using the ebi endpoint.
+    :param controller_uri: The controller URI.
+    :return: The query result in JSON format.
+    """
+
+    query_controller_info = """
+        PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
+
+        SELECT DISTINCT ?controller_name ?cell_term
+        WHERE
+          {
+            <""" + controller_uri + """> biopax3:displayName ?controller_name ;
+                     biopax3:cellularLocation ?cell_vocabulary .
+            ?cell_vocabulary biopax3:term ?cell_term
+          }
+        """
+
+    sparql.setQuery(query_controller_info)
+    sparql.setReturnFormat(JSON)
+    return sparql.queryAndConvert()
+
+
+def select_uniprot(sparql, uniprot_id):
+    """
+    It retrieves some information about a protein stored in Uniprot given its accession number.
+
+    :param sparql: SPARQLWrapper object using the Uniprot endpoint.
+    :param uniprot_id: The Uniprot AC of the protein.
+    :return: The query result in JSON format.
     """
 
     query_uniprot = """
@@ -211,6 +288,7 @@ def select_uniprot(sparql, uniprot_id):
             ?gene skos:prefLabel ?gene_name
           }
         """
+
     sparql.setQuery(query_uniprot)
     sparql.setReturnFormat(JSON)
     return sparql.queryAndConvert()
