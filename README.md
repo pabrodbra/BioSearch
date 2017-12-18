@@ -40,9 +40,10 @@ To setup Django now execute the following commands:
 
 Lastly, we should be able to run BioSearch locally with:
 
+* `python manage.py runserver`
 * To modify the ip and port use `python manage.py runserver 0.0.0.0:8000`
 
-Example URL:
+Afterwards, you can access your application with the following example URL:
 
 ```
 localhost:8000
@@ -50,6 +51,6 @@ localhost:8000
 
 ## Authors
 
-* **Juan Ignacio Alvarez** - *QUE PONGO* - [juanjuanignacio](https://github.com/juanjuanignacio)
-* **Guillermo Lopez Garcia** - *QUE PONGO* - [guilopgar](https://github.com/guilopgar)
-* **Pablo Rodriguez Brazzarola** - *QUE PONGO* - [pabrodbra](https://github.com/pabrodbra)
+* **Juan Ignacio Alvarez** - Front-End Developer - [juanjuanignacio](https://github.com/juanjuanignacio)
+* **Guillermo Lopez Garcia** - Back-End Developer - [guilopgar](https://github.com/guilopgar)
+* **Pablo Rodriguez Brazzarola** - Full Stack Developer - [pabrodbra](https://github.com/pabrodbra)
