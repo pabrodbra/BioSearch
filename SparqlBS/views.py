@@ -81,7 +81,7 @@ def search_controllers(request):
     return HttpResponse(response, content_type="application/json")
 
 
-def search_info_controllers(request):
+def search_controller_info(request):
     controller_id = request.GET.get('input')
 
     if controller_id.startswith("http"):
@@ -103,4 +103,17 @@ def search_info_controllers(request):
         print("Information not found for that controller!")
 
     response = JsonResponse(controller_info_result)
+    return HttpResponse(response, content_type="application/json")
+
+
+def search_full_info(request):
+    # Federated Query of all the selected info by now...
+    # request has 3 inputs: pathway_uri; reaction_uri; controller_uri
+    # If one is empty (uri == ""), must not retrieve info from such
+    pathway_uri = request.GET.get('pathway_uri')
+    reaction_uri = request.GET.get('reaction_uri')
+    controller_uri = request.GET.get('controller_uri')
+    
+    response = JsonResponse()
+
     return HttpResponse(response, content_type="application/json")

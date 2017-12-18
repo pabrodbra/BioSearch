@@ -135,8 +135,9 @@ $(document).on('click', ".pathway_item", function() {
 	last_path = $(this);
 
 	pathway_uri = $(this).attr('id');
-	reaction_uri = null;
-	controller_uri = null;
+	reaction_uri = "";
+	controller_uri = "";
+
 	searchSPARQL("reaction", "reaction_list", "reaction_item", pathway_uri);
 });
 
@@ -149,7 +150,8 @@ $(document).on('click', ".reaction_item", function() {
 	last_reaction = $(this);
 
 	reaction_uri = $(this).attr('id');
-	controller_uri = null;
+	controller_uri = "";
+
 	searchSPARQL("controller", "controller_list", "controller_item", reaction_uri);
 });
 
@@ -160,5 +162,6 @@ $(document).on('click', ".controller_item", function() {
 	last_controller = $(this);
 
 	controller_uri = $(this).attr('id')
+
 	searchSPARQL("controller_info", "controller_info", "info_item", controller_uri);
 });

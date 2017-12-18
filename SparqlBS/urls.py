@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^pathway$', views.search_pathways, name='pathway'),
     url(r'^reaction$', views.search_reactions, name='reaction'),
     url(r'^controller$', views.search_controllers, name='controllers'),
-    url(r'^controller_info$', views.search_info_controllers, name='controller_info'),
+    url(r'^controller_info$', views.search_controller_info, name='controller_info'),
+    url(r'^full_info$', views.search_full_info, name='full_info'),
 ]
