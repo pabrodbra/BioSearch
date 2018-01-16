@@ -1,0 +1,156 @@
+<!--Header Begin-->
+{%extends "header.html"%}
+{%load staticfiles%}
+{% block content%}
+
+<!--Toprow Begin-->
+<div id="toprow" style="z-index:1">
+    <div class="row" style="margin: 5px 20px 5px 20px">
+        
+        <!-- PATHWAY PANEL -->
+        <div class="col-md-3">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <!-- Texto Arriba de panel -->
+                </div>
+                <div class="panel-body text-center">
+                    <!-- PANEL TITLE -->
+                    <p class="lead" style="font-size:30px"><strong>Search Pathways</strong></p>
+                    <!-- PATHWAY SEARCH BOX -->
+                    <div class="btn-default-searchbox" style="margin-bottom: 10px">
+                        <button id="pathway_submit" class="btn btn-primary">Search</button>
+                        <input id="pathway_input" type="text" />
+                    </div>
+                </div>
+                <ul id="pathway_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px" >
+                    <!-- PATHWAY SEARCH RESULTS -->
+                </ul>
+            </div>
+        </div>
+
+        <!-- PANEL -->
+        <div class="col-md-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <!-- Texto Arriba de panel -->
+                </div>
+                <div class="panel-body text-center">
+                    <!-- PANEL TITLE -->
+                    <p class="lead" style="font-size:30px"><strong>Reacciones</strong></p>
+                </div>
+                <ul id="reaction_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px">
+                    <li class="list-group-item">
+                        <button class="btn btn-lg btn-block btn-default" href="#" style="background:white">Encima 1</a>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-envelope"></span> Encima 2
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-heart"></span> Encima 3
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-calendar"></span> Encima 4
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-envelope"></span> Encima 5
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-heart"></span> Encima 16
+                    </li>
+                </ul>
+                <div class="panel-footer"> <a class="btn btn-lg btn-block btn-danger" href="#" style="background:dimgray">Esto esque me da pena quitarlo</a> </div>
+            </div>
+        </div>
+
+        <!-- PANEL -->
+        <div class="col-md-3">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <!-- Texto Arriba de panel -->
+                </div>
+                <div class="panel-body text-center">
+                    <!-- PANEL TITLE -->
+                    <p class="lead" style="font-size:30px"><strong>Proteinas</strong></p>
+                </div>
+                <ul id="enzimes_list" class="list-group list-group-flush text-center" style="overflow: auto; max-height: 500px">
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-calendar"></span> Organismo 1
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-envelope"></span> Organismo 4
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-heart" ></span> Organismo 3
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+
+        <!-- PANEL -->
+        <div class="col-md-3">
+            <div class="panel panel-danger">
+                <div class="panel-heading">
+                    <!-- Texto Arriba de panel -->
+                </div>
+                <div class="panel-body text-center">
+                    <!-- PANEL TITLE -->
+                    <p class="lead" style="font-size:30px"><strong>Info</strong></p>
+                </div>
+                <ul id="protein_info" class="list-group list-group-flush text-center">
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-calendar"></span> Aqui 
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphcon-envelope"></span> Van cosas
+                    </li>
+                    <li class="list-group-item">
+                        <span class="glyphicon glyphicon-heart"></span> De informacion y tal
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<!--Toprow END-->
+<!--MiddleRow Begin-->
+<div id="midrow" style="z-index:1">
+    <div class="box">
+      <h1>Business Plan</h1>
+      <a class="plan" href="#">Business Plan</a>
+      <p><a>Nuestro plan es seguir creciendo para poder ofrecer al cliente la mejor experiencia de busqueda y la mayor informacion posible.</a><br />
+        <br />
+        <a href="#" class="button"><span>Learn More</span></a></p>
+    </div>
+    <div class="box">
+      <h1>Why Choose Us?</h1>
+      <a class="whyus" href="#">Why Choose Us?</a>
+      <p><a>Escogenos a nosotros si crees que podemos ayudarte a encotrar la informacion que necesitas, sin tener que saltar entre 8 buscadores biologicos distintos.</a><br />
+        <br />
+        <a href="#" class="button"><span>Learn More</span></a></p>
+    </div>
+    <div class="box last">
+      <h1>Our Support</h1>
+      <a class="support" href="#">Our Support</a>
+      <p><a>Seguimos trabajando para mejorar esa pagina, esta pagina existe gracias al soporte de la universidad de Malaga.</a><br />
+        <br />
+        <a href="#" class="button"><span>Learn More</span></a></p>
+    </div>
+</div>
+<!--MiddleRow END-->
+<!--BottomRow Begin-->
+<div id="bottomrow">
+  <div class="textbox">
+    <h1>Seguimos trabajando</h1>
+    <a>Una ruta metabolica o via metabolica es una sucesion de reacciones quimicas donde un sustrato inicial se transforma y da lugar a productos finales, a traves de una serie de metabolitos intermediarios. Las diferentes reacciones de todas las rutas metabolicas estan catalizadas por enzimas y ocurren en el interior de las celulas. Muchas de estas rutas son muy complejas e involucran una modificacion paso a paso de la sustancia inicial para darle la forma del producto con la estructura quimica deseada. Es por esto que seguimos trabajando para poder agregar toda la informacion y metodos de busqueda posibles.</a> </div>
+  <div class="feed"> <a href="#"><img alt="" src="images/twitter.jpg" height="80" width="75" /></a> <a href="#"><img alt="" src="images/rss.jpg" height="80" width="67" /></a> </div>
+</div>
+<!--BottomRow END-->
+<!--Footer Begin-->
+<div id="footer">
+  <div class="foot"> <span>Biosearh</span> by <a href="https://www.uma.es/">Universidad de Malaga</a> is licensed under a <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 Unported License.</a> </div>
+</div>
+   
+{% endblock %}
