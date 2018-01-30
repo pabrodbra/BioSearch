@@ -58,7 +58,7 @@ a.button {
     float: inherit;
     background: url(images/border.jpg) no-repeat bottom right;
 }
-.button span{background:url(images/buttonl.gif) no-repeat left; padding:3px 5px;}
+/*.button span{background:url(images/buttonl.gif) no-repeat left; padding:3px 5px;}*/
 a.textbox {margin-top:100px;padding-left:10px;padding-right:0px;width:960px;}
     /*SlideShow End*/
     /*Homepage Boxs*/
@@ -74,9 +74,10 @@ a.whyus{margin-top:10px;float:left;display:block;width:83px;height:87px;backgrou
 a.whyus:hover{ background-position: 0px -88px;}
 a.support{margin-top:14px;float:left;display:block;width:83px;height:72px;background:url(images/support.jpg) no-repeat 0px 0px;text-indent:-1000px;}
 a.support:hover{ background-position: 0px -70px;}
-
+/*
 a.button{background:url(images/buttonr.gif) no-repeat right; padding:3px 0px; margin-left:2px; color:#CCCCCC; text-decoration:none; }
 .button span{background:url(images/buttonl.gif) no-repeat left; padding:3px 5px;}
+*/
 /*Homepage Boxs END*/
 
 /*Subpage Boxs*/
@@ -111,3 +112,10 @@ a.button{background:url(images/buttonr.gif) no-repeat right; padding:3px 0px; ma
 .default-searchbox{
     padding: 15px 10px 15px 10px;
 }
+
+.btn{
+    white-space: normal;
+}
+
+#twitter a{background:url(images/twitter.png) no-repeat;display:block;width:207px;height:53px;text-indent:-10000px;}
+#rss a{background:url(images/logo.gif) no-repeat;display:block;width:207px;height:53px;text-indent:-10000px;}

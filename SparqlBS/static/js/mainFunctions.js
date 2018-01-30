@@ -158,6 +158,7 @@ $("#pathway_input").keypress(function(e){
 });
 
 $("#pathway_submit").click(function() {
+	clearList("pathway_list");
 	clearList("reaction_list");
 	clearList("component_list");
 	clearList("component_info");
@@ -169,6 +170,7 @@ $("#pathway_submit").click(function() {
 // - Reactions
 
 $(document).on('click', ".pathway_item", function() {
+	clearList("reaction_list");
 	clearList("component_list");
 	clearList("component_info");
 
@@ -185,6 +187,7 @@ $(document).on('click', ".pathway_item", function() {
 // - Components
 
 $(document).on('click', ".reaction_item", function() {
+	clearList("component_list");
 	clearList("component_info");
 
 	activateButton(last_reaction, $(this));
