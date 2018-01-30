@@ -102,7 +102,7 @@ def search_reactant_product(request):
     return HttpResponse(response, content_type="application/json")
 
 
-def search_controller_info(request):
+def search_component_info(request):
     # Federated query
     controller_id = request.GET.get('input')
 
