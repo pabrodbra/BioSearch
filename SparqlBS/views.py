@@ -14,6 +14,16 @@ sparql_uniprot = SPARQLWrapper(uniprot_endpoint)
 def index(request):
     return render(request, 'index.html')
 
+def about(request):
+    return render(request, 'about.html')
+
+def services(request):
+    return render(request, 'services.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+
+# -- SPARQL
 
 def search_pathways(request):
     pathway_search = request.GET.get('input')
