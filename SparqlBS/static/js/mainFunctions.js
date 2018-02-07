@@ -117,6 +117,9 @@ function appendInfo(parsed_response, list_id, child_class){
 			//new_button.setAttribute("id", uri)
 			// Create text from variables of results
 			current_value = current_result[variables[var_name]]['value'];
+			// Only for sequences
+			if (current_value.length > 50 && current_value.match(" ") == null)
+			    current_value = current_value.match(/.{37}/g).join(' ');
 			console.log("***DEBUG*** current_value = " + current_value)
 			current_value = current_value.split('#').pop();
 			new_string += current_value;
