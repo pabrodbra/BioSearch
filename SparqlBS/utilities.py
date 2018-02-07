@@ -16,43 +16,6 @@ def convert_json_format_into_list(results):
     return query_rows
 
 
-def print_list_results(results):
-    """
-    Given a list containing the results of a SPARQL query,
-    it prints the variables used in the query and the query results.
-    :param results: A list of lists containing the "rows" of a SPARQL query results.
-    """
-    print("Variables:", ', '.join(results[0]))
-    for l in results[1:]:
-        print('\t'.join(l))
-
-
-def print_json_format(results):
-    """
-    Given a dictionary containing the results of a SPARQL query in JSON format,
-    it prints the variables used in the query and the query results.
-    :param results: A dictionary representing a JSON object.
-    """
-    variables = results["head"]["vars"]
-    print("Variables:", ', '.join(variables))
-    for result in results["results"]["bindings"]:
-        for v in variables:
-            print(result[v]["value"], end='\t')
-        print()
-
-
-def extract_uniprot_ac(results):
-    """
-    Given a list containing the results of a SPARQL query, it extracts the protein accession
-    number (Uniprot database identifier) from the URIs in the results list that contain
-    the Uniprot AC of a protein.
-
-    :param results: A list of lists containing the "rows" of a SPARQL query results.
-    :return: A list containing the extracted Uniprot ACs.
-    """
-    return [uri.split('/')[-1] for row in results[1:] for uri in row if 'uniprot' in uri]
-
-
 def extract_fragment_from_uri(uri):
     """
     Given an URI, this function extracts its fragment, considering the fragment as the part of the URI
@@ -324,35 +287,49 @@ def select_uniprot(sparql, uniprot_id):
     return sparql.queryAndConvert()
 
 
-def select_full_info(sparql, end_unip, controller_id):
+def select_full_info(sparql, end_unip, component_id):
     """
-    Using a federated query, it retrieves some information about a given controller. If controller_id is an URI
+    Using a federated query, it retrieves some information about a given component. If controller_id is an URI
     the information is retrieved form Reactome, and if it is an Uniprot accesion number the information is retrieved
     from Uniprot.
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param end_unip: The URL of the Uniprot endpoint.
-    :param controller_id: The controller identifier, either an URI or a Uniprot AC.
+    :param component_id: The component identifier, either an URI or a Uniprot AC.
     :return: The query result in JSON format.
     """
 
+    uniprot_id = extract_fragment_from_uri(component_id)
+
     query_full_info = """
         PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
-        PREFIX up_core:<http://purl.uniprot.org/core/>
+        PREFIX up:<http://purl.uniprot.org/core/>
         PREFIX uniprot:<http://purl.uniprot.org/uniprot/>
         PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 
-        SELECT DISTINCT ?controller_name ?data_1
+        SELECT DISTINCT ?data
         WHERE
           {
-             {<""" + controller_id + """> biopax3:displayName ?controller_name ;
-                            biopax3:cellularLocation ?cell_vocabulary .
-             ?cell_vocabulary biopax3:term ?data_1}
+
+             {VALUES ?comp_id{<""" + component_id + """>}
+             {?comp_id biopax3:displayName ?data}
+             UNION {?comp_id biopax3:cellularLocation ?cell_vocabulary .
+             ?cell_vocabulary biopax3:term ?data}}
+
              UNION {SERVICE <""" + end_unip + """> {
-                uniprot:""" + extract_fragment_from_uri(controller_id) + """ rdfs:label ?controller_name ;
-                         up_core:encodedBy ?gene .
-                ?gene skos:prefLabel ?data_1}}
+                VALUES ?prot{uniprot:""" + uniprot_id + """}
+                {?prot rdfs:label ?data }
+                UNION {?prot up:encodedBy ?gene .
+                ?gene skos:prefLabel ?data}
+                UNION {?prot up:sequence ?s
+                FILTER regex(str(?s), "-1$", "i")
+                ?s rdf:value ?data}
+                UNION {?prot up:classifiedWith ?c .
+                FILTER regex(?c, "GO_")
+                ?c rdfs:label ?data}}}
+
           }
         """
 

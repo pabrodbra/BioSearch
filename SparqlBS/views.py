@@ -14,14 +14,18 @@ sparql_uniprot = SPARQLWrapper(uniprot_endpoint)
 def index(request):
     return render(request, 'index.html')
 
+
 def about(request):
     return render(request, 'about.html')
+
 
 def services(request):
     return render(request, 'services.html')
 
+
 def contact(request):
     return render(request, 'contact.html')
+
 
 # -- SPARQL
 
@@ -121,10 +125,10 @@ def search_component_info(request):
 
     if len(controller_info_list) > 1:
         print()
-        print("The found information for the controller is:")
+        print("The found information for the component is:")
         for l in controller_info_list[1:]:
-            # Se muestra: Controller_name (Cellular_location or Gene_name)
-            print(l[0] + ' (' + l[1] + ')')
+            # Se muestra: Component_info
+            print(l[0])
 
     else:
         print("Information not found for that controller!")
