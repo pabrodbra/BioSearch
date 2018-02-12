@@ -29,7 +29,7 @@ def extract_fragment_from_uri(uri):
 
 def select_pathway(sparql, pathway_search):
     """
-    It retrieves all the pathways which names contain a given keyword (search word)
+    It retrieves all the pathways which names contain a given keyword (search word).
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param pathway_search: The keyword or search word.
@@ -61,7 +61,8 @@ def select_pathway(sparql, pathway_search):
 
 def select_reaction(sparql, pathway_uri):
     """
-    It retrieves all biochemical reactions of a given pathway.
+    It retrieves all types of reactions (biochemical, degradation and template)
+    of a given pathway.
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param pathway_uri: The pathway identifier (URI)
@@ -75,9 +76,12 @@ def select_reaction(sparql, pathway_uri):
         SELECT DISTINCT *
         WHERE
         {<""" + pathway_uri + """> biopax3:pathwayComponent ?reaction .
-        ?reaction rdf:type biopax3:BiochemicalReaction ;
-                  biopax3:displayName ?reaction_name ;
-                  biopax3:conversionDirection ?direction}
+        ?reaction biopax3:displayName ?reaction_name ;
+                  rdf:type ?reaction_type
+        VALUES ?reaction_type{biopax3:BiochemicalReaction biopax3:Degradation
+                                    biopax3:TemplateReaction}
+        OPTIONAL { ?reaction biopax3:conversionDirection ?direction }
+        OPTIONAL { VALUES ?direction{"LEFT_TO_RIGHT"} }}
         """
 
     sparql.setQuery(query_reactions)
@@ -158,6 +162,8 @@ def select_protein(sparql, reaction_uri):
 def select_all_controller(sparql, reaction_uri):
     """
     It retrieves all types of controllers of a given reaction, both protein and non-protein types.
+    If the controller is a Protein, controller_id contains either its Uniprot AC or its Reactome URI.
+    If it is a non-Protein type, controller_id contains its Reactome URI.
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param reaction_uri: The reaction URI identifier.
@@ -171,30 +177,22 @@ def select_all_controller(sparql, reaction_uri):
         WHERE
           {
             ?control biopax3:controlled <""" + reaction_uri + """> ;
-                     a ?control_type
-            OPTIONAL {?control biopax3:controlType ?c_type}
-
-            {VALUES ?controller_type{biopax3:PhysicalEntity biopax3:Complex biopax3:Rna
-                                    biopax3:SmallMolecule biopax3:Dna}
-            ?control biopax3:controller ?controller_id .
-            ?controller_id biopax3:displayName ?controller_name ;
-                           a ?controller_type}
-
-            UNION {VALUES ?controller_type{biopax3:Protein}
-            ?control biopax3:controller ?protein .
-            ?protein biopax3:displayName ?controller_name ;
-                 a ?controller_type
+                     a ?control_type ;
+                     biopax3:controlType ?c_type ;
+                     biopax3:controller ?controller .
+            ?controller biopax3:displayName ?controller_name ;
+                           a ?controller_type
             OPTIONAL {
-              ?protein biopax3:entityReference ?protein_ref .
+              ?controller biopax3:entityReference ?protein_ref .
               ?protein_ref biopax3:xref ?protein_xref .
               ?protein_xref biopax3:id ?protein_ac ;
                             biopax3:db ?protein_db .
               FILTER regex(?protein_db, "uniprot", "i")
             }
-            BIND (IF(BOUND(?protein_ac), ?protein_ac, ?protein) AS ?controller_id)}
+            BIND (IF(BOUND(?protein_ac), ?protein_ac, ?controller) AS ?controller_id)
           }
 
-        ORDER BY ?control_type
+        ORDER BY ?control_type ?controller_type
         """
 
     sparql.setQuery(query_all_controllers)
@@ -204,7 +202,9 @@ def select_all_controller(sparql, reaction_uri):
 
 def select_reactant_product(sparql, reaction_uri):
     """
-    It retrieves all reactants and products of a given reaction.
+    It retrieves all reactants and products of a given reaction. If the component is a Protein,
+    component_id contains either its Uniprot AC or its Reactome URI. If it is a non-protein
+    type, component_id contains its Reactome URI.
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param reaction_uri: The reaction URI identifier.
@@ -213,16 +213,26 @@ def select_reactant_product(sparql, reaction_uri):
 
     query_react_prod = """
     PREFIX biopax3: <http://www.biopax.org/release/biopax-level3.owl#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT DISTINCT ?component_id ?component_name ?component_type ?composition_type
     WHERE
       {
         VALUES ?reaction{<""" + reaction_uri + """>}
-        { ?reaction biopax3:left ?component_id .
+        ?reaction ?c ?component .
+        ?component a ?component_type ;
+                   biopax3:displayName ?component_name
+        {VALUES ?c{biopax3:left}
           VALUES ?composition_type{"Reactant"}}
-        UNION { ?reaction biopax3:right ?component_id .
+        UNION { VALUES ?c{biopax3:right}
                 VALUES ?composition_type{"Product"}}
-        ?component_id a ?component_type ;
-                        biopax3:displayName ?component_name
+        OPTIONAL {
+          ?component biopax3:entityReference ?protein_ref .
+          ?protein_ref biopax3:xref ?protein_xref .
+          ?protein_xref biopax3:id ?protein_ac ;
+                        biopax3:db ?protein_db .
+          FILTER regex(?protein_db, "uniprot", "i")
+        }
+        BIND (IF(BOUND(?protein_ac), ?protein_ac, ?component) AS ?component_id)
       }
     """
 
@@ -295,7 +305,7 @@ def select_full_info(sparql, end_unip, component_id):
 
     :param sparql: SPARQLWrapper object using the ebi endpoint.
     :param end_unip: The URL of the Uniprot endpoint.
-    :param component_id: The component identifier, either an URI or a Uniprot AC.
+    :param component_id: The component identifier, either an URI or an Uniprot AC.
     :return: The query result in JSON format.
     """
 
@@ -312,13 +322,12 @@ def select_full_info(sparql, end_unip, component_id):
         SELECT DISTINCT ?data
         WHERE
           {
-
              {VALUES ?comp_id{<""" + component_id + """>}
              {?comp_id biopax3:displayName ?data}
              UNION {?comp_id biopax3:cellularLocation ?cell_vocabulary .
              ?cell_vocabulary biopax3:term ?data}}
 
-             UNION {SERVICE <""" + end_unip + """> {
+             UNION { SERVICE <""" + end_unip + """> {
                 VALUES ?prot{uniprot:""" + uniprot_id + """}
                 {?prot rdfs:label ?data }
                 UNION {?prot up:encodedBy ?gene .
@@ -329,7 +338,6 @@ def select_full_info(sparql, end_unip, component_id):
                 UNION {?prot up:classifiedWith ?c .
                 FILTER regex(?c, "GO_")
                 ?c rdfs:label ?data}}}
-
           }
         """
 
